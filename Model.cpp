@@ -7,8 +7,9 @@
 
 Model::Model(){}
 Model::Model(int timeIni, int timeFin, int increment): timeIni(timeIni), timeFin(timeFin), increment(increment){}
+Model::Model(const string& name, int timeIni, int timeFin, int increment): name(name), timeIni(timeIni), timeFin(timeFin), increment(increment){}
 Model::~Model(){}
-Model::Model(const Model &other) {
+Model::Model(Model &other) {
     this->setName(other.getName());
     this->setIncrement((other.getIncrement()));
     this->setTimeIni(other.getTimeIni());
@@ -21,7 +22,7 @@ Model::Model(const Model &other) {
     }
 }
 
-Model& Model::operator=(const Model &other){
+Model& Model::operator=(Model &other){
     this->setName(other.getName());
     this->setIncrement((other.getIncrement()));
     this->setTimeIni(other.getTimeIni());

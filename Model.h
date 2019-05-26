@@ -25,8 +25,9 @@ public:
     typedef typename vector<Flow*>::iterator iterator;
     Model();
     Model(int, int, int);
-    Model(const Model &other);
-    Model& operator=(const Model &other);
+    Model(const string&, int, int , int);
+    Model(Model &other);
+    Model& operator=(Model &other);
     ~Model();
     const int getTimeIni() const;
     void setTimeIni(int);
