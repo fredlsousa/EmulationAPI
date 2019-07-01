@@ -1,16 +1,17 @@
 //
-// Created by Frederico on 25/05/19.
+// Created by Frederico on 07/06/19.
 //
 
-#ifndef EMULATIONAPI_UNIT_SYSTEM_H
-#define EMULATIONAPI_UNIT_SYSTEM_H
+#ifndef API_SINGLETON_UNIT_SYSTEM_H
+#define API_SINGLETON_UNIT_SYSTEM_H
 
+#include "../SystemImpl.h"
 #include "../System.h"
 #include <assert.h>
 #include <cmath>
 
 bool nameSystemTest(const string& name){
-    System* s1 = new System();
+    System* s1 = new SystemImpl();
     s1->setName(name);
     if (s1->getName() == name){
         return true;
@@ -21,7 +22,7 @@ bool nameSystemTest(const string& name){
 }
 
 bool resourceTest(double& val){
-    System* s1 = new System();
+    System* s1 = new SystemImpl();
     s1->setResource(val);
     if(s1->getResource() == val){
         return true;
@@ -32,10 +33,9 @@ bool resourceTest(double& val){
 }
 
 bool testCopy(System* sys){
-    System* s1 = new System();
+    System* s1 = new SystemImpl();
     s1 = sys;
     if(s1 == sys){
-        delete s1;
         return true;
     }
     else{
@@ -43,8 +43,8 @@ bool testCopy(System* sys){
     }
 }
 
-bool testOperators(System sys1){
-    System sys2("sys2", 20);
+bool testOperators(SystemImpl sys1){
+    SystemImpl sys2("sys2", 20);
     sys1 = sys1 * 10;
     assert((sys1.getResource() - 1000) < 0.0001);
     sys2 = sys2*sys1;
@@ -62,8 +62,8 @@ bool testOperators(System sys1){
 void unitarySystemTest(){
     int success = 0;
     int fails = 0;
-    System sys1(100);
-    System sys2(20);
+    SystemImpl sys1(100);
+    SystemImpl sys2(20);
     sys1 = sys1*10;
     assert((sys1.getResource() - 1000) < 0.0001);
     sys2 = sys2*sys1;
@@ -76,10 +76,9 @@ void unitarySystemTest(){
     cout << sys2.getResource() << endl;
     assert(fabs(sys2.getResource() - 10000.1) < 0.0001);
 
-    System* sys3 = new System(100);
-    System* sys4 = new System(20);
+    System* sys3 = new SystemImpl(100);
+    System* sys4 = new SystemImpl(20);
     sys3 = sys4;
-    delete sys4;
     double val = sys3->getResource();
     assert(fabs(val - 20) < 0.0001);
 
@@ -102,7 +101,7 @@ void unitarySystemTest(){
         fails++;
     }
 
-    System* s1 = new System("s1", 100);
+    System* s1 = new SystemImpl("s1", 100);
     if(testCopy(s1)){
         cout << "System copy passed!" << endl;
         success++;
@@ -121,11 +120,11 @@ void unitarySystemTest(){
         fails++;
     }
 
-    cout << "TEST RESULTS: " << endl;
+    cout << "TEST SYSTEM RESULTS: " << endl;
     cout << "TOTAL TESTS: " << success + fails << endl;
-    cout << "SUCCES: " << success << endl;
+    cout << "SUCCESS: " << success << endl;
     cout << "FAILS: " << fails << endl;
 }
 
 
-#endif //EMULATIONAPI_UNIT_SYSTEM_H
+#endif //API_SINGLETON_UNIT_SYSTEM_H

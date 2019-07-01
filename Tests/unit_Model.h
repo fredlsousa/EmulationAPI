@@ -1,20 +1,20 @@
 //
-// Created by Frederico on 26/05/19.
+// Created by Frederico on 07/06/19.
 //
 
-#ifndef EMULATIONAPI_UNIT_MODEL_H
-#define EMULATIONAPI_UNIT_MODEL_H
+#ifndef API_SINGLETON_UNIT_MODEL_H
+#define API_SINGLETON_UNIT_MODEL_H
 
-#include "../Model.h"
+#include "../ModelImpl.h"
 #include "../ExponentialFlow.h"
+#include "../Model.h"
 #include <cmath>
 #include <assert.h>
 
 bool unitModelName(const string& name){
-    Model* model1 = new Model();
+    Model* model1 = new ModelImpl();
     model1->setName(name);
     if(model1->getName() == name){
-        delete model1;
         return true;
     }
     else{
@@ -23,10 +23,9 @@ bool unitModelName(const string& name){
 }
 
 bool unitInitTimeTest(int& ini){
-    Model* model1 = new Model();
+    Model* model1 = new ModelImpl();
     model1->setTimeIni(ini);
     if(model1->getTimeIni() == ini){
-        delete model1;
         return true;
     }
     else{
@@ -35,10 +34,9 @@ bool unitInitTimeTest(int& ini){
 }
 
 bool unitFinalTimeTest(int& fin){
-    Model* model1 = new Model();
+    Model* model1 = new ModelImpl();
     model1->setTimeFin(fin);
     if(model1->getTimeFin() == fin){
-        delete model1;
         return true;
     }
     else{
@@ -47,10 +45,9 @@ bool unitFinalTimeTest(int& fin){
 }
 
 bool unitIncrementTest(int& inc){
-    Model* model1 = new Model();
+    Model* model1 = new ModelImpl();
     model1->setIncrement(inc);
     if(model1->getIncrement() == inc){
-        delete model1;
         return true;
     }
     else{
@@ -59,27 +56,27 @@ bool unitIncrementTest(int& inc){
 }
 
 bool unitAddTest(){
-    auto sys1 = new System(100);
-    auto sys2 = new System(0);
-    auto sys3 = new System(100);
-    auto sys4 = new System(0);
-    auto sys5 = new System(0);
+    auto sys1 = new SystemImpl(100);
+    auto sys2 = new SystemImpl(0);
+    auto sys3 = new SystemImpl(100);
+    auto sys4 = new SystemImpl(0);
+    auto sys5 = new SystemImpl(0);
     auto f1 = new ExponentialFlow("f1", sys1, sys2);
     auto f2 = new ExponentialFlow("f2", sys1, sys3);
     auto f3 = new ExponentialFlow("f3", sys2, sys3);
     auto f4 = new ExponentialFlow("f4", sys2, sys5);
     auto f5 = new ExponentialFlow("f5", sys3, sys4);
     auto f6 = new ExponentialFlow("f6", sys4, sys1);
-    auto model1 = new Model(0, 100, 1);
+    auto model1 = new ModelImpl(0, 100, 1);
     model1->add(f1);
     model1->add(f2);
     model1->add(f3);
     model1->add(f4);
     model1->add(f5);
     model1->add(f6);
-    auto it = model1->begin();
+    auto it = model1->beginFlow();
     int countFlow = 0;
-    while(it != model1->end()){
+    while(it != model1->endFlow()){
         countFlow++;
         it++;
     }
@@ -117,18 +114,18 @@ bool unitAddTest(){
 }
 
 bool unitEraseTest(){
-    auto sys1 = new System(100);
-    auto sys2 = new System(0);
-    auto sys3 = new System(100);
-    auto sys4 = new System(0);
-    auto sys5 = new System(0);
+    auto sys1 = new SystemImpl(100);
+    auto sys2 = new SystemImpl(0);
+    auto sys3 = new SystemImpl(100);
+    auto sys4 = new SystemImpl(0);
+    auto sys5 = new SystemImpl(0);
     auto f1 = new ExponentialFlow("f1", sys1, sys2);
     auto f2 = new ExponentialFlow("f2", sys1, sys3);
     auto f3 = new ExponentialFlow("f3", sys2, sys3);
     auto f4 = new ExponentialFlow("f4", sys2, sys5);
     auto f5 = new ExponentialFlow("f5", sys3, sys4);
     auto f6 = new ExponentialFlow("f6", sys4, sys1);
-    auto model1 = new Model(0, 100, 1);
+    auto model1 = new ModelImpl(0, 100, 1);
     model1->add(f1);
     model1->add(f2);
     model1->add(f3);
@@ -137,9 +134,9 @@ bool unitEraseTest(){
     model1->add(f6);
     model1->erase(f6);
     model1->erase(f1);
-    auto it = model1->begin();
+    auto it = model1->beginFlow();
     int countFlow = 0;
-    while(it != model1->end()){
+    while(it != model1->endFlow()){
         countFlow++;
         it++;
     }
@@ -176,32 +173,58 @@ bool unitEraseTest(){
 
 }
 
+
+bool unitOperatorEqualTest(Model* model1){
+    Model* m1 = new ModelImpl("name", 0, 100, 1);
+    m1 = model1;
+    if(m1 == model1){
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+
+bool unitCopyConstructor(Model* model1){
+    Model* m1 = new ModelImpl(*model1);
+    if(m1 == model1){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+
+
 void unitaryModelTest(){
 
     int success = 0;
     int fails = 0;
 
-    auto sys1 = new System(100);
-    auto sys2 = new System(0);
-    auto sys3 = new System(100);
-    auto sys4 = new System(0);
-    auto sys5 = new System(0);
+    auto sys1 = new SystemImpl(100);
+    auto sys2 = new SystemImpl(0);
+    auto sys3 = new SystemImpl(100);
+    auto sys4 = new SystemImpl(0);
+    auto sys5 = new SystemImpl(0);
     auto f1 = new ExponentialFlow("f1", sys1, sys2);
     auto f2 = new ExponentialFlow("f2", sys1, sys3);
     auto f3 = new ExponentialFlow("f3", sys2, sys3);
     auto f4 = new ExponentialFlow("f4", sys2, sys5);
     auto f5 = new ExponentialFlow("f5", sys3, sys4);
     auto f6 = new ExponentialFlow("f6", sys4, sys1);
-    auto model1 = new Model(0, 100, 1);
+    auto model1 = new ModelImpl(0, 100, 1);
     model1->add(f1);
     model1->add(f2);
     model1->add(f3);
     model1->add(f4);
     model1->add(f5);
     model1->add(f6);
-    auto it = model1->begin();
+    auto it = model1->beginFlow();
     int countFlow = 0;
-    while(it != model1->end()){
+    while(it != model1->endFlow()){
         countFlow++;
         it++;
     }
@@ -215,9 +238,9 @@ void unitaryModelTest(){
     assert(fabs(sys5->getResource() - 16.4612) < 0.0001);
     model1->erase(f6);
     model1->erase(f1);
-    it = model1->begin();
+    it = model1->beginFlow();
     countFlow = 0;
-    while(it != model1->end()){
+    while(it != model1->endFlow()){
         countFlow++;
         it++;
     }
@@ -286,14 +309,30 @@ void unitaryModelTest(){
         fails++;
     }
 
-    //lacks a copy test and a copy constructor test
+    if(unitOperatorEqualTest(model1)){
+        cout << "Model equal passed!" << endl;
+        success++;
+    }
+    else{
+        cout << "Model equal not passed!" << endl;
+        fails++;
+    }
 
-    cout << "TEST RESULTS: " << endl;
+    if(unitCopyConstructor(model1)){
+        cout << "Model copy construct passed!" << endl;
+        success++;
+    }
+    else{
+        cout << "Model copy constructor not passed!" << endl;
+        fails++;
+    }
+
+
+    cout << "TEST MODEL RESULTS: " << endl;
     cout << "TOTAL TESTS: " << success + fails << endl;
-    cout << "SUCCES: " << success << endl;
+    cout << "SUCCESS: " << success << endl;
     cout << "FAILS: " << fails << endl;
 
 }
 
-
-#endif //EMULATIONAPI_UNIT_MODEL_H
+#endif //API_SINGLETON_UNIT_MODEL_H

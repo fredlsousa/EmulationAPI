@@ -1,81 +1,69 @@
 //
-// Created by Frederico on 22/05/19.
+// Created by Frederico on 07/06/19.
 //
 
-#ifndef EMULATIONAPI_TESTS_H
-#define EMULATIONAPI_TESTS_H
-
+#ifndef API_SINGLETON_FUNC_TESTS_H
+#define API_SINGLETON_FUNC_TESTS_H
 
 #include <iostream>
-#include "../System.h"
 #include "../ExponentialFlow.h"
-#include "../Model.h"
 #include "../LogisticFlow.h"
+#include "../System.h"
+#include "../Flow.h"
+#include "../Model.h"
 #include "assert.h"
 #include <cmath>
 
 
 void exponentialTest(){
-    System pop1;
-    System pop2;
-    pop1.setResource(100);
-    pop2.setResource(0);
-    ExponentialFlow f1(&pop1, &pop2);
-    Model modelo1(0, 100, 1);
-    modelo1.add(&f1);
-    modelo1.execute();
+    Model* m1 = Model::createModel("m1", 0, 100, 1);
+    System* pop1 = m1->createSystem("pop1", 100);
+    System* pop2 = m1->createSystem("pop2", 0);
+    Flow* f1 = m1->createFlow<ExponentialFlow>("f1", pop1, pop2);
+    m1->execute();
     cout << "Modelo Exponencial: " << endl;
-    modelo1.report();
-    assert(fabs(pop1.getResource() - 36.6032) < 0.0001);
-    assert(fabs(pop2.getResource() - 63.3968) < 0.0001);
+    m1->report();
+    assert(fabs(pop1->getResource() - 36.6032) < 0.0001);
+    assert(fabs(pop2->getResource() - 63.3968) < 0.0001);
+
 }
 
 
 void logisticTest(){
-    System p1(100);
-    System p2(10);
-    LogisticFlow f1(&p1, &p2);
-    Model modelo1(0, 100, 1);
-    modelo1.add(&f1);
-    modelo1.execute();
+    Model* m1 = Model::createModel("m1", 0, 100, 1);
+    System* p1 = m1->createSystem("p1", 100);
+    System* p2 = m1->createSystem("p2", 10);
+    Flow* f1 = m1->createFlow<LogisticFlow>("f1", p1, p2);
+    m1->execute();
     cout << "Modelo Logistico: " << endl;
-    modelo1.report();
-    assert(fabs(p1.getResource() - 88.2167) < 0.0001);
-    assert(fabs(p2.getResource() - 21.7834) < 0.0001);
+    m1->report();
+    assert(fabs(p1->getResource() - 88.2167) < 0.0001);
+    assert(fabs(p2->getResource() - 21.7834) < 0.0001);
 }
 
 
 void finalTest(){
-    System Q1(100);
-    System Q2(0);
-    System Q3(100);
-    System Q4(0);
-    System Q5(0);
-    ExponentialFlow f(&Q1, &Q2);
-    ExponentialFlow g(&Q1, &Q3);
-    ExponentialFlow t(&Q2, &Q3);
-    ExponentialFlow r(&Q2, &Q5);
-    ExponentialFlow u(&Q3, &Q4);
-    ExponentialFlow v(&Q4, &Q1);
-    Model modelo1(0, 100, 1);
-    modelo1.add(&f);
-    modelo1.add(&g);
-    modelo1.add(&r);
-    modelo1.add(&t);
-    modelo1.add(&u);
-    modelo1.add(&v);
-    modelo1.execute();
+    Model* m1 = Model::createModel("m1", 0, 100, 1);
+    System* Q1 = m1->createSystem("Q1", 100);
+    System* Q2 = m1->createSystem("Q2", 0);
+    System* Q3 = m1->createSystem("Q3", 100);
+    System* Q4 = m1->createSystem("Q4", 0);
+    System* Q5 = m1->createSystem("Q5", 0);
+    Flow* f = m1->createFlow<ExponentialFlow>("f", Q1, Q2);
+    Flow* g = m1->createFlow<ExponentialFlow>("g", Q1, Q3);
+    Flow* t = m1->createFlow<ExponentialFlow>("t", Q2, Q3);
+    Flow* r = m1->createFlow<ExponentialFlow>("r", Q2, Q5);
+    Flow* u = m1->createFlow<ExponentialFlow>("u", Q3, Q4);
+    Flow* v = m1->createFlow<ExponentialFlow>("v", Q4, Q1);
+    m1->execute();
     cout << "Modelo Final: " << endl;
-    modelo1.report();
-    assert(fabs(Q1.getResource() - 31.8513) < 0.0001);
-    assert(fabs(Q2.getResource() - 18.4003) < 0.0001);
-    assert(fabs(Q3.getResource() - 77.1143) < 0.0001);
-    assert(fabs(Q4.getResource() - 56.1728) < 0.0001);
-    assert(fabs(Q5.getResource() - 16.4612) < 0.0001);
+    m1->report();
+    assert(fabs(Q1->getResource() - 31.8513) < 0.0001);
+    assert(fabs(Q2->getResource() - 18.4003) < 0.0001);
+    assert(fabs(Q3->getResource() - 77.1143) < 0.0001);
+    assert(fabs(Q4->getResource() - 56.1728) < 0.0001);
+    assert(fabs(Q5->getResource() - 16.4612) < 0.0001);
 }
 
 
-
-
-
-#endif //EMULATIONAPI_TESTS_H
+#endif //API_SINGLETON_FUNC_TESTS_H

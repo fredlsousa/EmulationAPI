@@ -1,19 +1,20 @@
 //
-// Created by Frederico on 26/05/19.
+// Created by Frederico on 07/06/19.
 //
 
-#ifndef EMULATIONAPI_UNIT_FLOW_H
-#define EMULATIONAPI_UNIT_FLOW_H
+#ifndef API_SINGLETON_UNIT_FLOW_H
+#define API_SINGLETON_UNIT_FLOW_H
 
 #include "../ExponentialFlow.h"
 #include <cmath>
+#include "../SystemImpl.h"
 #include <assert.h>
 
+
 bool unitNameTest(const string& name){
-    ExponentialFlow* f1 = new ExponentialFlow();
+    Flow* f1 = new ExponentialFlow();
     f1->setName(name);
     if(f1->getName() == name){
-        delete f1;
         return true;
     }
     else{
@@ -22,10 +23,9 @@ bool unitNameTest(const string& name){
 }
 
 bool unitSystemSourceTest(System* s1){
-    System* s2 = new System("s2", 30);
+    System* s2 = new SystemImpl("s2", 30);
     ExponentialFlow* f1 = new ExponentialFlow("f1", s1, s2);
     if(f1->getSourceSystem() == s1){
-        delete s2;
         delete f1;
         return true;
     }
@@ -36,10 +36,9 @@ bool unitSystemSourceTest(System* s1){
 }
 
 bool unitSystemDestinyTest(System* s2){
-    System* s1 = new System("s1", 100);
+    System* s1 = new SystemImpl("s1", 100);
     ExponentialFlow* f1 = new ExponentialFlow("f1", s1, s2);
     if(f1->getDestinySystem() == s2){
-        delete s1;
         delete f1;
         return true;
     }
@@ -49,14 +48,11 @@ bool unitSystemDestinyTest(System* s2){
 }
 
 bool unitConnectTest(System* sysConnect){
-    System* s1 = new System("s1", 100);
-    System* s2 = new System("s2", 50);
-    ExponentialFlow* f1 = new ExponentialFlow("f1", s1, s2);
+    System* s1 = new SystemImpl("s1", 100);
+    System* s2 = new SystemImpl("s2", 50);
+    Flow* f1 = new ExponentialFlow("f1", s1, s2);
     f1->connect(sysConnect, s1);
     if(f1->getSourceSystem() == sysConnect){
-        delete s1;
-        delete s2;
-        delete f1;
         return true;
     }
     else{
@@ -65,11 +61,10 @@ bool unitConnectTest(System* sysConnect){
 }
 
 bool unitEraseTest(System* toErase){
-    System* s1 = new System("s1", 100);
+    System* s1 = new SystemImpl("s1", 100);
     ExponentialFlow* f1 = new ExponentialFlow("f1", toErase, s1);
     f1->erase(toErase);
     if(f1->getSourceSystem() == nullptr){
-        delete s1;
         delete f1;
         return true;
     }
@@ -78,15 +73,14 @@ bool unitEraseTest(System* toErase){
     }
 }
 
-bool unitEqualOperatorTest(ExponentialFlow* rhs){
-    System* s1 = new System("s1", 100);
-    System* s2 = new System("s2", 50);
-    ExponentialFlow* f1 = new ExponentialFlow("f1", s1, s2);
+bool unitEqualOperatorTest(Flow* rhs){
+    System* s1 = new SystemImpl("s1", 100);
+    System* s2 = new SystemImpl("s2", 50);
+    Flow* f1 = new ExponentialFlow("f1", s1, s2);
     f1 = rhs;
     if(f1 == rhs){              //in this case, it works because rhs is not deleted
-        delete s1;              //what really happens is that f1 points to rhs, but it is not hard copied
-        delete s2;              //it needs to hard copy rhs in f1, not just point to rhs's adress
-        delete f1;
+        //what really happens is that f1 points to rhs, but it is not hard copied
+        //it needs to hard copy rhs in f1, not just point to rhs's adress
         return true;
     }
     else{
@@ -94,46 +88,26 @@ bool unitEqualOperatorTest(ExponentialFlow* rhs){
     }
 }
 
-bool unitCopyConstructorTest(ExponentialFlow* rhs){
-    ExponentialFlow* f1 = new ExponentialFlow(*rhs);
-    if(f1 == rhs){
-        delete f1;
-        return true;
-    }
-    else{
-        return false;
-    }
-}
+
 
 void unitaryFlowTest(){
 
     int success = 0;
     int fails = 0;
 
-    System sys3(100);
-    System sys4(5);
-    ExponentialFlow lf1(&sys3, nullptr);
+    System* sys3 = new SystemImpl(100);
+    System* sys4 = new SystemImpl(5);
+    ExponentialFlow lf1(sys3, nullptr);
     double val = lf1.execute();
     assert(fabs(val - 1) < 0.0001);
-    lf1.connect(&sys3, &sys4);
+    lf1.connect(sys3, sys4);
     val = lf1.execute();
     assert(fabs(val - 1) < 0.0001);
-    lf1.erase(&sys3);
-    System* sys5 = new System(200);
-    System* sys6 = new System(20);
-    ExponentialFlow* f1 = new ExponentialFlow("f1", sys5, sys6);
-    ExponentialFlow* f2 = new ExponentialFlow(*f1);
-    //ExponentialFlow* f2 = new ExponentialFlow("f2", sys6, sys5);
+    lf1.erase(sys3);
+    System* sys5 = new SystemImpl(200);
+    System* sys6 = new SystemImpl(20);
+    Flow* f1 = new ExponentialFlow("f1", sys5, sys6);
     val = f1->execute();
-    val = f2->execute();
-    //assert(fabs(val - 2) < 0.0001);
-    //f2 = f1;
-    delete f1;
-    cout << f2->getName() << endl;
-    val = f2->execute();
-    //assert(fabs(val - 2) < 0.0001);
-    delete f2;
-
 
     if(unitNameTest("Flow1")){
         cout << "Flow name passed!" << endl;
@@ -182,7 +156,7 @@ void unitaryFlowTest(){
         fails++;
     }
 
-    ExponentialFlow* fq = new ExponentialFlow("fq", sys5, sys6);
+    Flow* fq = new ExponentialFlow("fq", sys5, sys6);
 
     if(unitEqualOperatorTest(fq)){
         cout << "Flow equal passed!" << endl;
@@ -194,21 +168,12 @@ void unitaryFlowTest(){
         fails++;
     }
 
-    if(unitCopyConstructorTest(fq)){
-        cout << "Flow copy constructor passed!" << endl;
-        success++;
-    }
-    else{
-        cout << "Flow copy constructor not passed!" << endl;
-        fails++;
-    }
 
-    cout << "TEST RESULTS: " << endl;
+
+    cout << "TEST FLOW RESULTS: " << endl;
     cout << "TOTAL TESTS: " << success + fails << endl;
-    cout << "SUCCES: " << success << endl;
+    cout << "SUCCESS: " << success << endl;
     cout << "FAILS: " << fails << endl;
 }
 
-
-
-#endif //EMULATIONAPI_UNIT_FLOW_H
+#endif //API_SINGLETON_UNIT_FLOW_H
