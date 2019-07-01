@@ -1,53 +1,41 @@
 //
-// Created by Frederico on 08/05/19.
+// Created by Frederico on 07/06/19.
 //
 
-#ifndef EMULATIONAPI_SYSTEM_H
-#define EMULATIONAPI_SYSTEM_H
+#ifndef API_SINGLETON_SYSTEM_H
+#define API_SINGLETON_SYSTEM_H
 
 #include <iostream>
 
-
 using namespace std;
 
-class System{
-private:
-    double resource;
-    string name;
+class System {
 public:
-    System();
-    System(double);
-    System(const string& , double);
-    System(const System& s);
-    System& operator= (const System &other);
-    ~System();
-    const double getResource() const;
-    void setResource(double);
-    friend ostream& operator<< (ostream& os, System& s);
-    System operator+ (System &s);
-    System operator+ (int r);
-    System operator+ (double r);
-    System operator* (System &s);
-    System operator* (int r);
-    System operator* (double r);
-    System operator- (System &s);
-    System operator- (int r);
-    System operator- (double r);
-    System operator/ (System &s);
-    System operator/ (int r);
-    System operator/ (double r);
-    const string &getName() const;
-    void setName(const string &name);
-    bool operator==(const System &rhs) const;
-    bool operator!=(const System &rhs) const;
-    bool operator<(const System &rhs) const;
-    bool operator>(const System &rhs) const;
-    bool operator<=(const System &rhs) const;
-    bool operator>=(const System &rhs) const;
+
+    friend double operator+ (const System &s1, const System &s2);
+    friend double operator+ (const System &s, int r);
+    friend double operator+ (const System &s, double r);
+    friend double operator* (const System &s1, const System &s2);
+    friend double operator* (const System &s, int r);
+    friend double operator* (const System &s, double r);
+    friend double operator- (const System &s1, const System& s2);
+    friend double operator- (const System &s, int r);
+    friend double operator- (const System &s, double r);
+    friend double operator/ (const System &s1, const System &s2);
+    friend double operator/ (const System &s, int r);
+    friend double operator/ (const System &s, double r);
+    virtual const double getResource() const = 0;
+    virtual void setResource(double) = 0;
+    virtual const string &getName() const = 0;
+    virtual void setName(const string &name) = 0;
+    virtual bool operator==(const System &rhs) const = 0;
+    virtual bool operator!=(const System &rhs) const = 0;
+    virtual bool operator<(const System &rhs) const = 0;
+    virtual bool operator>(const System &rhs) const = 0;
+    virtual bool operator<=(const System &rhs) const = 0;
+    virtual bool operator>=(const System &rhs) const = 0;
+
 };
 
 
-
-
-
-#endif //EMULATIONAPI_SYSTEM_H
+#endif //API_SINGLETON_SYSTEM_H

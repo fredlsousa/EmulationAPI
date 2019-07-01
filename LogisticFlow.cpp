@@ -1,5 +1,5 @@
 //
-// Created by Frederico on 09/05/19.
+// Created by Frederico on 07/06/19.
 //
 
 #include "LogisticFlow.h"
@@ -7,10 +7,12 @@
 
 LogisticFlow::LogisticFlow() {}
 
-LogisticFlow::LogisticFlow(System* source, System* destiny): Flow(source, destiny) {}
+LogisticFlow::LogisticFlow(System* source, System* destiny): FlowImpl(source, destiny) {}
+
+LogisticFlow::LogisticFlow(const string& name, System* source, System* destiny): FlowImpl(name, source, destiny){}
 
 LogisticFlow::~LogisticFlow() {
-    LogisticFlow::~Flow();
+    LogisticFlow::~FlowImpl();
 }
 
 double LogisticFlow::execute() {

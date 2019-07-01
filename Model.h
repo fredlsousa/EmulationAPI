@@ -1,64 +1,52 @@
 //
-// Created by Frederico on 08/05/19.
+// Created by Frederico on 07/06/19.
 //
 
-#ifndef EMULATIONAPI_MODEL_H
-#define EMULATIONAPI_MODEL_H
+#ifndef API_SINGLETON_MODEL_H
+#define API_SINGLETON_MODEL_H
 
-
-#include <iostream>
-#include <vector>
 #include "Flow.h"
+#include "FlowImpl.h"
+#include "System.h"
+#include <vector>
 
-using namespace std;
+typedef typename vector<Flow*>::iterator FlowIterator;
+typedef typename vector<System*>::iterator SystemIterator;
 
 
-class Model{
-protected:
-    int timeIni;
-    int timeFin;
-    int increment;
-    string name;
-    vector <Flow *> Flows;
-
+class Model {
 public:
-    typedef typename vector<Flow*>::iterator iterator;
-    Model();
-    Model(int, int, int);
-    Model(const string&, int, int , int);
-    Model(Model &other);
-    Model& operator=(Model &other);
-    ~Model();
-    const int getTimeIni() const;
-    void setTimeIni(int);
-    const int getTimeFin() const;
-    void setTimeFin(int);
-    void add(Flow*);
-    void erase(Flow* toDelete);
+    virtual const int getTimeIni() const = 0;
+    virtual void setTimeIni(int) = 0;
+    virtual const int getTimeFin() const = 0;
+    virtual void setTimeFin(int) = 0;
+    virtual FlowIterator beginFlow() = 0;
+    virtual FlowIterator endFlow()  = 0;
+    virtual SystemIterator beginSystem() = 0;
+    virtual SystemIterator endSystem() = 0;
+    virtual void report() = 0;
+    virtual void execute() = 0;
+    virtual int getIncrement() const = 0;
+    virtual void setIncrement(int increment) = 0;
+    virtual const string &getName() const = 0;
+    virtual void setName(const string &name) = 0;
+    virtual void getFlowNames() = 0;
 
-    iterator begin(){
-        return Flows.begin();
+    template<class T>
+    Flow* createFlow(const string& name, System* source, System* destiny){
+        FlowImpl* f = new T(name, source, destiny);
+        add(f);
+        return f;
     }
 
-    iterator end(){
-        return Flows.end();
-    }
-
-    Flow* operator[](int i){
-        return Flows[i];
-    }
-    void report();
-    void execute();
-    int getIncrement() const;
-    void setIncrement(int increment);
-
-    const string &getName() const;
-
-    void setName(const string &name);
-    void getFlowNames();
-    bool operator==(const Model &rhs) const;
-    bool operator!=(const Model &rhs) const;
-
+    virtual System* createSystem(const string&, double) = 0;
+    static Model* createModel(const string&, int, int , int);
+protected:
+    virtual void add(Flow*) = 0;
+    virtual void erase(Flow* toDelete) = 0;
+    virtual void add(System*) = 0;
+    virtual void erase(System*) = 0;
 };
 
-#endif //EMULATIONAPI_MODEL_H
+
+#endif //API_SINGLETON_MODEL_H

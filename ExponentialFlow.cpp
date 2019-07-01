@@ -1,15 +1,15 @@
 //
-// Created by Frederico on 08/05/19.
+// Created by Frederico on 07/06/19.
 //
 
 #include "ExponentialFlow.h"
 
 ExponentialFlow::ExponentialFlow() {}
-ExponentialFlow::ExponentialFlow(System* source, System* destiny): Flow(source, destiny){}
-ExponentialFlow::ExponentialFlow(const string &name, System* source, System* destiny): Flow(name, source, destiny) {}
+ExponentialFlow::ExponentialFlow(System* source, System* destiny): FlowImpl(source, destiny){}
+ExponentialFlow::ExponentialFlow(const string &name, System* source, System* destiny): FlowImpl(name, source, destiny) {}
 
 ExponentialFlow::~ExponentialFlow() {
-    ExponentialFlow::~Flow();
+    ExponentialFlow::~FlowImpl();
 }
 
 double ExponentialFlow::execute() {

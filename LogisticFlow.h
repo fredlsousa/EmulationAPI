@@ -1,20 +1,22 @@
 //
-// Created by Frederico on 09/05/19.
+// Created by Frederico on 07/06/19.
 //
 
-#ifndef EMULATIONAPI_LOGISTICFLOW_H
-#define EMULATIONAPI_LOGISTICFLOW_H
+#ifndef API_SINGLETON_LOGISTICFLOW_H
+#define API_SINGLETON_LOGISTICFLOW_H
 
-#include "Flow.h"
+#include "FlowImpl.h"
 #include "System.h"
 
-class LogisticFlow : public Flow{
+class LogisticFlow : public FlowImpl{
 public:
     LogisticFlow();
     LogisticFlow(System*, System*);
+    LogisticFlow(const string&, System*, System*);
     ~LogisticFlow();
     double execute();
 };
 
 
-#endif //EMULATIONAPI_LOGISTICFLOW_H
+
+#endif //API_SINGLETON_LOGISTICFLOW_H
