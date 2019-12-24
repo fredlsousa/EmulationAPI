@@ -1,4 +1,6 @@
 # EmulationAPI
 
 A basic API to simulte Models that are based on Systems and Flows. 
-In development.
+
+This example implements basic software engineering design patterns like Singleton and Mathod Factory. 
+Academic work in "Software Engineering I" course.
